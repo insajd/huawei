@@ -9,22 +9,33 @@
 #
 #       You can use this library without any restrictions!
 #       V1.0
+#		V1.1 - 25-10-2015 Library changed to work with E3372
 
 from xml.dom import minidom
-import urllib
-import urllib2
 from array import *
 
-from poster.encode import multipart_encode
-from poster.streaminghttp import register_openers
+import requests
+import re
 
+s = None;
+
+def grep_csrf(html):
+	pat = re.compile(r".*meta name=\"csrf_token\" content=\"(.*)\"", re.I)
+	matches = (pat.match(line) for line in html.splitlines())
+	return [m.group(1) for m in matches if m]
 
 class Huawei():
-	ip = "http://192.168.1.1"
+	ip = "http://192.168.8.1"
 	xml_response = 0
 	xml_error = 0
+
 	def __init__(self):
-		print "started"
+		global s
+		print ("Huawei object started")
+		s = requests.Session()
+		r = s.get(self.ip + "/html/index.html")
+		csrf_tokens = grep_csrf(r.text)
+		s.headers.update({'__RequestVerificationToken': csrf_tokens[0]})
 
 	def getText(self,nodelist):
             """ Method to get the text from a dom node """
@@ -34,16 +45,16 @@ class Huawei():
 		    rc.append(node.data)
 	    return ''.join(rc)
 	def send_request(self,url,header,data):
-		# Register the streaming http handlers with urllib2
-		register_openers()
-		# headers contains the necessary Content-Type and Content-Length
-		# datagen is a generator object that yields the encoded parameters
-		headers={'Content-Type': 'application/xml'}
-		# Create the Request object
-		request = urllib2.Request(self.ip+url, data, headers)
-		# Actually do the request, and get the response
-		result = urllib2.urlopen(request).read()
-		print result
+		if data is not None:
+			if header != '':
+				s.headers.update (header)
+			r = s.post(self.ip + url, data=data)
+			s.headers.update({'__RequestVerificationToken': r.headers['__RequestVerificationToken']})
+		else:
+			r = s.get(self.ip + url, data=data)
+		result = r.text
+		
+		print (result)
 		return result
 	def parse_xml(self,data):
 		""" Parse the xml output from the http request and returns True if the responde is ok otherwise there is an error """
@@ -245,7 +256,7 @@ class Huawei():
 			return None
 	def get_device_information(self):
                 """ Method to return all information about the device """
-		result = self.send_request("/api/device/information","","")
+		result = self.send_request("/api/device/information","",None)
 		if self.parse_xml(result):
 			deviceName = self.getText(self.xml_response[0].getElementsByTagName("DeviceName")[0].childNodes)
 			serialNumber = self.getText(self.xml_response[0].getElementsByTagName("SerialNumber")[0].childNodes)
@@ -256,13 +267,15 @@ class Huawei():
 			hardwareVersion = self.getText(self.xml_response[0].getElementsByTagName("HardwareVersion")[0].childNodes)
 			softwareVersion = self.getText(self.xml_response[0].getElementsByTagName("SoftwareVersion")[0].childNodes)
 			webUIVersion = self.getText(self.xml_response[0].getElementsByTagName("WebUIVersion")[0].childNodes)
-			uptime = self.getText(self.xml_response[0].getElementsByTagName("Uptime")[0].childNodes)
+			#uptime = self.getText(self.xml_response[0].getElementsByTagName("Uptime")[0].childNodes)
 			macAddress = self.getText(self.xml_response[0].getElementsByTagName("MacAddress1")[0].childNodes)
 			macAddress2 = self.getText(self.xml_response[0].getElementsByTagName("MacAddress2")[0].childNodes)
 			productFamily = self.getText(self.xml_response[0].getElementsByTagName("ProductFamily")[0].childNodes)
 			classify = self.getText(self.xml_response[0].getElementsByTagName("Classify")[0].childNodes)
 			responseArray = [deviceName,serialNumber,imei,imsi,iccid,msisdn,hardwareVersion,
-                                        softwareVersion,webUIVersion,uptime,macAddress,macAddress2,
+                                        softwareVersion,webUIVersion,
+										#uptime,
+										macAddress,macAddress2,
                                         productFamily,classify]
 			return responseArray
 		else:
