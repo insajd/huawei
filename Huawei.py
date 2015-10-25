@@ -101,9 +101,9 @@ class Huawei():
 			return resultArray		
 		else:
 			return None
-        def delete_sms(self,index):
-                """ Method to delete a sms message """
-                data = "<request>"
+	def delete_sms(self,index):
+		""" Method to delete a sms message """
+		data = "<request>"
 		data += "<Index>"+str(index)+"</Index>"
 		data += "</request>"
                 result = self.send_request("/api/sms/delete-sms","",data)
@@ -135,20 +135,20 @@ class Huawei():
                                 return None
                 else:
                         return None          
-        def get_sms(self,sms):
-                """ Method to get the message from the dom object """
-                smstat = self.getText(sms.getElementsByTagName("Smstat")[0].childNodes)
-                index = self.getText(sms.getElementsByTagName("Index")[0].childNodes)
-                phone = self.getText(sms.getElementsByTagName("Phone")[0].childNodes)
-                content = self.getText(sms.getElementsByTagName("Content")[0].childNodes)
-                date = self.getText(sms.getElementsByTagName("Date")[0].childNodes)
-                sca = self.getText(sms.getElementsByTagName("Sca")[0].childNodes)
-                saveType = self.getText(sms.getElementsByTagName("SaveType")[0].childNodes)
-                priority = self.getText(sms.getElementsByTagName("Priority")[0].childNodes)
-                smsType = self.getText(sms.getElementsByTagName("SmsType")[0].childNodes)
-                resultArray = [smstat,index,phone,content,date,sca,
-                                saveType,priority,smsType]
-                return resultArray
+	def get_sms(self,sms):
+			""" Method to get the message from the dom object """
+			smstat = self.getText(sms.getElementsByTagName("Smstat")[0].childNodes)
+			index = self.getText(sms.getElementsByTagName("Index")[0].childNodes)
+			phone = self.getText(sms.getElementsByTagName("Phone")[0].childNodes)
+			content = self.getText(sms.getElementsByTagName("Content")[0].childNodes)
+			date = self.getText(sms.getElementsByTagName("Date")[0].childNodes)
+			sca = self.getText(sms.getElementsByTagName("Sca")[0].childNodes)
+			saveType = self.getText(sms.getElementsByTagName("SaveType")[0].childNodes)
+			priority = self.getText(sms.getElementsByTagName("Priority")[0].childNodes)
+			smsType = self.getText(sms.getElementsByTagName("SmsType")[0].childNodes)
+			resultArray = [smstat,index,phone,content,date,sca,
+							saveType,priority,smsType]
+			return resultArray
 	def set_sms_read(self,index):
 		""" Method to set a message as read """
 		data = "<request><Index>"+str(index)+"</Index></request>"
@@ -255,7 +255,7 @@ class Huawei():
 		else:
 			return None
 	def get_device_information(self):
-                """ Method to return all information about the device """
+		""" Method to return all information about the device """
 		result = self.send_request("/api/device/information","",None)
 		if self.parse_xml(result):
 			deviceName = self.getText(self.xml_response[0].getElementsByTagName("DeviceName")[0].childNodes)
@@ -279,17 +279,253 @@ class Huawei():
                                         productFamily,classify]
 			return responseArray
 		else:
-                        return None
+			return None
 
-        def is_connected(self):
-                """ Method to get if the dongle is connected to an internet connection """
-                result = self.get_connection_status()
-                if result[0] == "901": #901 => connected, 902 => disconnected, 900 => connecting
-                        return True
-                else:
-                        return False
+	def is_connected(self):
+		""" Method to get if the dongle is connected to an internet connection """
+		result = self.get_connection_status()
+		if result[0] == "901": #901 => connected, 902 => disconnected, 900 => connecting
+			return True
+		else:
+			return False
+				
 		
-a  = Huawei()
+	def get_device_autorun_version(self):
+		""" Method to get device autorun version """
+		result = self.send_request("/api/device/autorun-version","",None)
+		return result
+
+	def get_device_basic_information(self):
+		""" Method to get device basic_information """
+		result = self.send_request("/api/device/basic_information","",None)
+		return result
+
+	def get_device_device_feature_switch(self):
+		""" Method to get device device feature switch """
+		result = self.send_request("/api/device/device-feature-switch","",None)
+		return result
+
+	#def get_device_information(self):
+	#	""" Method to get device information """
+	#	result = self.send_request("/api/device/information","",None)
+	#	return result
+
+	def get_device_signal(self):
+		""" Method to get device signal """
+		result = self.send_request("/api/device/signal","",None)
+		return result
+
+	def get_dhcp_settings(self):
+		""" Method to get dhcp settings """
+		result = self.send_request("/api/dhcp/settings","",None)
+		return result
+
+	def get_dialup_connection(self):
+		""" Method to get dialup connection """
+		result = self.send_request("/api/dialup/connection","",None)
+		return result
+
+	def get_dialup_dialup_feature_switch(self):
+		""" Method to get dialup dialup feature switch """
+		result = self.send_request("/api/dialup/dialup-feature-switch","",None)
+		return result
+
+	def get_dialup_mobile_dataswitch(self):
+		""" Method to get dialup mobile dataswitch """
+		result = self.send_request("/api/dialup/mobile-dataswitch","",None)
+		return result
+
+	def get_dialup_profiles(self):
+		""" Method to get dialup profiles """
+		result = self.send_request("/api/dialup/profiles","",None)
+		return result
+
+	def get_global_module_switch(self):
+		""" Method to get global module switch """
+		result = self.send_request("/api/global/module-switch","",None)
+		return result
+
+	def get_language_current_language(self):
+		""" Method to get language current language """
+		result = self.send_request("/api/language/current-language","",None)
+		return result
+
+	#def get_monitoring_check_notifications(self):
+	#	""" Method to get monitoring check notifications """
+	#	result = self.send_request("/api/monitoring/check-notifications","",None)
+	#	return result
+
+	def get_monitoring_converged_status(self):
+		""" Method to get monitoring converged status """
+		result = self.send_request("/api/monitoring/converged-status","",None)
+		return result
+
+	def get_monitoring_month_statistics(self):
+		""" Method to get monitoring month_statistics """
+		result = self.send_request("/api/monitoring/month_statistics","",None)
+		return result
+
+	def get_monitoring_start_date(self):
+		""" Method to get monitoring start_date """
+		result = self.send_request("/api/monitoring/start_date","",None)
+		return result
+
+	#def get_monitoring_status(self):
+	#	""" Method to get monitoring status """
+	#	result = self.send_request("/api/monitoring/status","",None)
+	#	return result
+
+	def get_monitoring_traffic_statistics(self):
+		""" Method to get monitoring traffic statistics """
+		result = self.send_request("/api/monitoring/traffic-statistics","",None)
+		return result
+
+	#def get_net_current_plmn(self):
+	#	""" Method to get net current plmn """
+	#	result = self.send_request("/api/net/current-plmn","",None)
+	#	return result
+
+	def get_net_net_feature_switch(self):
+		""" Method to get net net feature switch """
+		result = self.send_request("/api/net/net-feature-switch","",None)
+		return result
+
+	def get_net_net_mode(self):
+		""" Method to get net net mode """
+		result = self.send_request("/api/net/net-mode","",None)
+		return result
+
+	def get_net_net_mode_list(self):
+		""" Method to get net net mode list """
+		result = self.send_request("/api/net/net-mode-list","",None)
+		return result
+
+	def get_net_network(self):
+		""" Method to get net network """
+		result = self.send_request("/api/net/network","",None)
+		return result
+
+	def get_net_plmn_list(self):
+		""" Method to get net plmn list """
+		result = self.send_request("/api/net/plmn-list","",None)
+		return result
+
+	def get_net_register(self):
+		""" Method to get net register """
+		result = self.send_request("/api/net/register","",None)
+		return result
+
+	def get_online_update_cancel_downloading(self):
+		""" Method to get online update cancel downloading """
+		result = self.send_request("/api/online-update/cancel-downloading","",None)
+		return result
+
+	def get_online_update_check_new_version(self):
+		""" Method to get online update check new version """
+		result = self.send_request("/api/online-update/check-new-version","",None)
+		return result
+
+	def get_online_update_status(self):
+		""" Method to get online update status """
+		result = self.send_request("/api/online-update/status","",None)
+		return result
+
+	def get_online_update_upgrade_messagebox(self):
+		""" Method to get online update upgrade messagebox """
+		result = self.send_request("/api/online-update/upgrade-messagebox","",None)
+		return result
+
+	def get_pin_simlock(self):
+		""" Method to get pin simlock """
+		result = self.send_request("/api/pin/simlock","",None)
+		return result
+
+	def get_pin_status(self):
+		""" Method to get pin status """
+		result = self.send_request("/api/pin/status","",None)
+		return result
+
+	def get_redirection_homepage(self):
+		""" Method to get redirection homepage """
+		result = self.send_request("/api/redirection/homepage","",None)
+		return result
+
+	def get_security_dmz(self):
+		""" Method to get security dmz """
+		result = self.send_request("/api/security/dmz","",None)
+		return result
+
+	def get_security_firewall_switch(self):
+		""" Method to get security firewall switch """
+		result = self.send_request("/api/security/firewall-switch","",None)
+		return result
+
+	def get_security_lan_ip_filter(self):
+		""" Method to get security lan ip filter """
+		result = self.send_request("/api/security/lan-ip-filter","",None)
+		return result
+
+	def get_security_nat(self):
+		""" Method to get security nat """
+		result = self.send_request("/api/security/nat","",None)
+		return result
+
+	def get_security_sip(self):
+		""" Method to get security sip """
+		result = self.send_request("/api/security/sip","",None)
+		return result
+
+	def get_security_special_applications(self):
+		""" Method to get security special applications """
+		result = self.send_request("/api/security/special-applications","",None)
+		return result
+
+	def get_security_upnp(self):
+		""" Method to get security upnp """
+		result = self.send_request("/api/security/upnp","",None)
+		return result
+
+	def get_security_virtual_servers(self):
+		""" Method to get security virtual servers """
+		result = self.send_request("/api/security/virtual-servers","",None)
+		return result
+
+	def get_sms_backup_sim(self):
+		""" Method to get sms backup sim """
+		result = self.send_request("/api/sms/backup-sim","",None)
+		return result
+
+	def get_sms_config(self):
+		""" Method to get sms config """
+		result = self.send_request("/api/sms/config","",None)
+		return result
+
+	def get_sms_send_status(self):
+		""" Method to get sms send status """
+		result = self.send_request("/api/sms/send-status","",None)
+		return result
+
+	#def get_sms_sms_count(self):
+	#	""" Method to get sms sms count """
+	#	result = self.send_request("/api/sms/sms-count","",None)
+	#	return result
+
+	def get_sms_sms_feature_switch(self):
+		""" Method to get sms sms feature switch """
+		result = self.send_request("/api/sms/sms-feature-switch","",None)
+		return result
+
+	def get_sms_splitinfo_sms(self):
+		""" Method to get sms splitinfo sms """
+		result = self.send_request("/api/sms/splitinfo-sms","",None)
+		return result
+
+	def get_sntp_sntpswitch(self):
+		""" Method to get sntp sntpswitch """
+		result = self.send_request("/api/sntp/sntpswitch","",None)
+		return result
+		
+#a  = Huawei()
 #print a.connect()
 #print a.disconnect()
 #print a.get_device_information()
